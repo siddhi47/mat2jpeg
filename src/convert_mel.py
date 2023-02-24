@@ -86,6 +86,7 @@ def save_spectogram(src_file:str, dest_folder:str)->str:
     dest_file = os.path.join(dest_folder, file_name)
     librosa.display.specshow(mel_spectrogram)
     plt.savefig(dest_file, bbox_inches='tight', pad_inches=-.05, dpi=100)
+    plt.close()
     return dest_file
 
     
@@ -95,7 +96,10 @@ def main():
     parser.add_argument('--dest', type=str, required=True, help='Path to the destination folder')
     parser.add_argument('--num_workers', type=int, default=4, help='Number of workers to use')
     args = parser.parse_args()
-
+    
+    # check available workers
+    num_workers = min(args.num_workers, os.cpu_count())
+    print(f'Using {num_workers} workers')
     # Get the list of files
     file_list = get_file_list(args.src)
 
